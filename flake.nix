@@ -10,15 +10,20 @@
   outputs = { self, nixpkgs, utils, naersk, worker-build, wrangler }:
     utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.legacyPackages.${system} ;
         naersk-lib = pkgs.callPackage naersk { };
         worker-build-bin = worker-build.packages.${system}.default;
         wrangler-bin = wrangler.packages.${system}.default;
-        zellij-bin = zellij.packages.${system}.default;
       in {
-        # defaultPackage = naersk-lib.buildPackage ./.;
+        packages = {
+          pot-cli = naersk-lib.buildPackage {
+            pname = "pot-cli";
+            root = ./pot-cli;
+          };
+          default = self.packages.${system}.pot-cli;
+        };
         devShell = with pkgs; mkShell {
-          buildInputs = [ cargo rustc rustfmt pre-commit rustPackages.clippy lld wasm-pack worker-build-bin wrangler-bin ];
+          buildInputs = [ cargo rustc rustfmt pre-commit rustPackages.clippy lld wasm-pack worker-build-bin wrangler-bin tailwindcss ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
         };
       }
