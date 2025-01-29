@@ -1,0 +1,23 @@
+
+ ⛅️ wrangler 3.105.1 (update available 3.106.0)
+-----------------------------------------------
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProcessing wrangler.toml configuration:[0m
+
+  
+    - "env.prebuilt" environment configuration
+      - "r2_buckets" exists at the top level, but not on "env.prebuilt".
+        This is not what you probably want, since "r2_buckets" is not inherited by environments.
+        Please add "r2_buckets" to "env.prebuilt".
+      - "d1_databases" exists at the top level, but not on "env.prebuilt".
+        This is not what you probably want, since "d1_databases" is not inherited by environments.
+        Please add "d1_databases" to "env.prebuilt".
+
+
+Using vars defined in .dev.vars
+Your worker has access to the following bindings:
+- Vars:
+  - GITHUB_CLIENT_SECRET: "(hidden)"
+⎔ Starting local server...
+[wrangler:inf] Ready on http://localhost:8787
+[wrangler:inf] GET / 200 OK (40ms)
