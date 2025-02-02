@@ -21,7 +21,7 @@ directory = "assets"
 command = """
 mkdir -p assets/pkg &&
 cp public/* assets/ &&
-tailwindcss --minify -i style/tailwind.css -o assets/style.css &&
+npx @tailwindcss/cli --minify -i style/tailwind.css -o assets/style.css &&
 wasm-pack build --out-dir assets/pkg --no-typescript --release --target web --out-name client --features hydrate --no-default-features &&
 worker-build --release --features ssr --no-default-features
 """
@@ -30,10 +30,18 @@ worker-build --release --features ssr --no-default-features
 command = """
 mkdir -p assets/pkg &&
 cp public/* assets/ &&
-npx tailwindcss --minify -i style/tailwind.css -o assets/style.css &&
+npx @tailwindcss/cli --minify -i style/tailwind.css -o assets/style.css &&
 wasm-pack build --out-dir assets/pkg --no-typescript --no-opt --target web --out-name client --features hydrate --no-default-features &&
 worker-build --no-opt --features ssr --no-default-features
 """
 
 [env.prebuilt.build]
 command = ""
+
+[env.nix.build]
+command = """
+# nix build ..#pot-web &&
+rm -rf assets build &&
+cp -r result/assets assets &&
+cp -r result/build build
+"""
