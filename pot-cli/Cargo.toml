@@ -2,6 +2,7 @@
 name = "pot-cli"
 version = "0.1.0"
 edition = "2021"
+include = ["/tests/*.wat", "/tests/*.wasm"]
 
 [dependencies]
 anyhow = "1.0.91"

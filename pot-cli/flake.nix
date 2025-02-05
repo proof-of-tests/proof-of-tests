@@ -1,22 +1,42 @@
 {
   inputs = {
-    naersk.url = "github:nix-community/naersk/master";
+    crane.url = "github:ipetkov/crane";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, utils, naersk }:
-    utils.lib.eachDefaultSystem (system:
-      let
+  outputs = {
+    self,
+    nixpkgs,
+    utils,
+    crane,
+  }:
+    utils.lib.eachDefaultSystem (
+      system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        naersk-lib = pkgs.callPackage naersk { };
+        craneLib = crane.mkLib pkgs;
+
+        # Create a filtered source with WAT and WASM files included
+        src = pkgs.lib.cleanSourceWith {
+          src = ./.;
+          filter = path: type:
+            (craneLib.filterCargoSources path type)
+            || (type == "regular" && builtins.match ".*\\.wat$" path != null)
+            || (type == "regular" && builtins.match ".*\\.wasm$" path != null);
+        };
+
+        commonArgs = {
+          inherit src;
+        };
+
+        crate = craneLib.buildPackage commonArgs;
       in {
+        checks = {
+          inherit crate;
+        };
         packages = {
-          default = naersk-lib.buildPackage {
-            pname = "pot-cli";
-            root = ./.;
-          };
+          default = crate;
         };
       }
     );
-} 
+}
