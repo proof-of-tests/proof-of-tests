@@ -21,4 +21,6 @@ jobs:
         with:
           determinate: true
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - run: nix build
+      - run: cd pot-cli && nix build
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: cd pot-web && nix build
