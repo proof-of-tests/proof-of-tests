@@ -90,6 +90,7 @@
             worker-build-bin
             pinned-wasm-bindgen-cli
             binaryen
+            esbuild
           ];
         };
 
