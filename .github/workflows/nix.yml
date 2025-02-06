@@ -24,4 +24,4 @@ jobs:
         with:
           determinate: true
       - uses: DeterminateSystems/flakehub-cache-action@main
-      - run: nix build
+      - run: nix build .#pot-cli .#pot-web
