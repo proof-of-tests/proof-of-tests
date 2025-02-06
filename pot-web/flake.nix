@@ -10,6 +10,7 @@
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
     alejandra.url = "github:kamadorueda/alejandra/3.1.0";
     alejandra.inputs.nixpkgs.follows = "nixpkgs";
+    crane.url = "github:ipetkov/crane";
   };
 
   outputs = {
@@ -20,6 +21,7 @@
     wrangler,
     rust-overlay,
     alejandra,
+    crane,
   }:
     utils.lib.eachDefaultSystem (
       system: let
@@ -27,73 +29,68 @@
           inherit system;
           overlays = [(import rust-overlay)];
         };
+        pinned-wasm-bindgen-cli = pkgs.wasm-bindgen-cli.override {
+          version = "0.2.100";
+          hash = "sha256-3RJzK7mkYFrs7C/WkhW9Rr4LdP5ofb2FdYGz1P7Uxog=";
+          cargoHash = "sha256-tD0OY2PounRqsRiFh8Js5nyknQ809ZcHMvCOLrvYHRE=";
+        };
         worker-build-bin = worker-build.packages.${system}.default;
         wrangler-bin = wrangler.packages.${system}.default;
 
-        # Create a derivation for building the client-side Wasm
-        pot-web-client = pkgs.stdenv.mkDerivation {
-          name = "pot-web-client";
+        # Initialize crane with our custom toolchain
+        craneLib = (crane.mkLib pkgs).overrideToolchain (p:
+          p.rust-bin.stable.latest.default.override {
+            targets = ["wasm32-unknown-unknown"];
+          });
+
+        pot-web-client-deps = craneLib.buildDepsOnly {
           src = ./.;
-
-          nativeBuildInputs = with pkgs; [
-            (rust-bin.stable.latest.default.override {
-              targets = ["wasm32-unknown-unknown"];
-            })
-            wasm-pack
-            pkg-config
-            cacert
-          ];
-
-          buildPhase = ''
-            # Set up temporary directories and environment
-            export TMPDIR=$PWD/tmp
-            export HOME=$TMPDIR/home
-
-            # Set SSL certificate path
-            export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-            export NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-
-            # Build client-side wasm
-            wasm-pack build --out-dir pkg --no-typescript --release --target web --out-name client --features hydrate --no-default-features
-          '';
-
-          installPhase = ''
-            mkdir -p $out
-            cp -r pkg $out/
-          '';
+          cargoExtraArgs = "--target wasm32-unknown-unknown --features hydrate --no-default-features";
+          doCheck = false;
         };
 
-        # Create a derivation for building the server-side Wasm
-        pot-web-server = pkgs.stdenv.mkDerivation {
-          name = "pot-web-server";
+        # Create a derivation for building the client-side Wasm using crane
+        pot-web-client = craneLib.buildPackage {
           src = ./.;
+          cargoArtifacts = pot-web-client-deps;
+          buildPhaseCargoCommand = "HOME=$PWD/tmp wasm-pack build --out-dir pkg --mode no-install --no-typescript --release --target web --out-name client --features hydrate --no-default-features";
+          doNotPostBuildInstallCargoBinaries = true;
+          installPhaseCommand = ''
+            mkdir -p $out/pkg
+            cp -r pkg/* $out/pkg/
+          '';
+          doCheck = false;
 
           nativeBuildInputs = with pkgs; [
-            (rust-bin.stable.latest.default.override {
-              targets = ["wasm32-unknown-unknown"];
-            })
-            worker-build-bin
-            pkg-config
-            cacert
+            wasm-pack
+            pinned-wasm-bindgen-cli
+            binaryen
           ];
+        };
 
-          buildPhase = ''
-            # Set up temporary directories and environment
-            export TMPDIR=$PWD/tmp
-            export HOME=$TMPDIR/home
+        pot-web-server-deps = craneLib.buildDepsOnly {
+          src = ./.;
+          cargoExtraArgs = "--target wasm32-unknown-unknown --features ssr --no-default-features";
+          doCheck = false;
+        };
 
-            # Set SSL certificate path
-            export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-            export NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-
-            # Build server-side wasm
-            worker-build --release --features ssr --no-default-features
+        # Create a derivation for building the server-side Wasm using crane
+        pot-web-server = craneLib.buildPackage {
+          src = ./.;
+          cargoArtifacts = pot-web-server-deps;
+          buildPhaseCargoCommand = "HOME=$PWD/tmp worker-build --release --features ssr --no-default-features";
+          doNotPostBuildInstallCargoBinaries = true;
+          doCheck = false;
+          installPhaseCommand = ''
+            mkdir -p $out/build
+            cp -r build/* $out/build/
           '';
 
-          installPhase = ''
-            mkdir -p $out
-            cp -r build $out/
-          '';
+          nativeBuildInputs = with pkgs; [
+            worker-build-bin
+            pinned-wasm-bindgen-cli
+            binaryen
+          ];
         };
 
         # Create the main pot-web derivation that combines everything
@@ -121,7 +118,7 @@
             cp style.css $out/assets/style.css
 
             # Copy wasm build outputs from other derivations
-            cp -r ${pot-web-client}/pkg $out/assets/
+            cp -r ${pot-web-client}/* $out/assets/
             cp -r ${pot-web-server}/build $out/
           '';
         };

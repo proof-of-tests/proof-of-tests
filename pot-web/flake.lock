@@ -23,6 +23,21 @@
         "type": "github"
       }
     },
+    "crane": {
+      "locked": {
+        "lastModified": 1738652123,
+        "narHash": "sha256-zdZek5FXK/k95J0vnLF0AMnYuZl4AjARq83blKuJBYY=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "c7e015a5fcefb070778c7d91734768680188a9cd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -102,16 +117,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1738297584,
-        "narHash": "sha256-AYvaFBzt8dU0fcSK2jKD0Vg23K2eIRxfsVXIPCW9a0E=",
+        "lastModified": 1738702386,
+        "narHash": "sha256-nJj8f78AYAxl/zqLiFGXn5Im1qjFKU8yBPKoWEeZN5M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9189ac18287c599860e878e905da550aa6dec1cd",
+        "rev": "030ba1976b7c0e1a67d9716b17308ccdab5b381e",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
+        "ref": "nixos-24.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -119,6 +134,7 @@
     "root": {
       "inputs": {
         "alejandra": "alejandra",
+        "crane": "crane",
         "nixpkgs": "nixpkgs",
         "rust-overlay": "rust-overlay",
         "utils": "utils",
