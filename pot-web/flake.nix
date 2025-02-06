@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     utils.url = "github:numtide/flake-utils";
     worker-build.url = "github:lemmih/nix-flakes?dir=worker-build";
     worker-build.inputs.nixpkgs.follows = "nixpkgs";

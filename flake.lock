@@ -143,15 +143,14 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-I/BRR7iheuh+q0yW8xVWK2oYjl2CsBoc3LjNUm9ANdA=",
         "path": "./pot-cli",
         "type": "path"
       },
       "original": {
         "path": "./pot-cli",
         "type": "path"
-      }
+      },
+      "parent": []
     },
     "pot-web": {
       "inputs": {
@@ -165,15 +164,14 @@
         "wrangler": "wrangler"
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-AHXtzaplZMzU+7ij/2zSQYqLstZUJOaSZBseTu2mb5A=",
         "path": "./pot-web",
         "type": "path"
       },
       "original": {
         "path": "./pot-web",
         "type": "path"
-      }
+      },
+      "parent": []
     },
     "root": {
       "inputs": {
