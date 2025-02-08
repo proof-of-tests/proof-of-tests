@@ -35,9 +35,6 @@
           inherit system;
           overlays = [(import rust-overlay)];
         };
-        pkgs-unstable = import nixpkgs-unstable {
-          inherit system;
-        };
 
         # Only define e2e-test for non-Darwin systems
         e2e-test =
