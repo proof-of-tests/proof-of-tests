@@ -10,11 +10,22 @@ updates:
     directory: "/pot-cli"
     schedule:
       interval: "weekly"
+    groups:
+      patch-versions:
+        update-types:
+          - "patch"
 
   - package-ecosystem: "cargo"
     directory: "/pot-web"
     schedule:
       interval: "weekly"
+    groups:
+      patch-versions:
+        update-types:
+          - "patch"
+      worker:
+        patterns:
+          - "worker*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
