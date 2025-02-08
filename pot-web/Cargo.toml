@@ -7,7 +7,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = { version = "0.4.0", features = [
+worker = { version = "0.5.0", features = [
   'http',
   'axum',
   'd1',
