@@ -12,7 +12,7 @@ worker = { version = "0.4.0", features = [
   'axum',
   'd1',
 ], optional = false }
-worker-macros = { version = "0.4.0", features = ['http'], optional = true }
+worker-macros = { version = "0.5.0", features = ['http'], optional = true }
 tower-service = "0.3.3"
 console_error_panic_hook = { version = "0.1.1" }
 leptos = "0.7.0"
