@@ -7,12 +7,12 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = { version = "0.4.0", features = [
+worker = { version = "0.5.0", features = [
   'http',
   'axum',
   'd1',
 ], optional = false }
-worker-macros = { version = "0.4.0", features = ['http'], optional = true }
+worker-macros = { version = "0.5.0", features = ['http'], optional = true }
 tower-service = "0.3.3"
 console_error_panic_hook = { version = "0.1.1" }
 leptos = "0.7.0"
@@ -40,7 +40,7 @@ instant = { version = "0.1.13", features = ["wasm-bindgen"] }
 serde_json = "1.0"
 send_wrapper = "0.6.0"
 gloo-timers = "0.3.0"
-worker-kv = "0.7.0"
+worker-kv = "0.8.0"
 ahash = { version = "0.8.11", default-features = false }
 enum-as-inner = "0.6.1"
 either = "1.13.0"
