@@ -26,3 +26,4 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@main
       - run: nix build .#pot-cli .#pot-web
       - run: nix flake check pot-cli/
+      - run: nix flake check
