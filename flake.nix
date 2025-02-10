@@ -36,26 +36,20 @@
           overlays = [(import rust-overlay)];
         };
 
-        # Only define e2e-test for non-Darwin systems
-        e2e-test =
-          if (!pkgs.stdenv.isDarwin)
-          then
-            pkgs.runCommand "e2e-test" {
-              nativeBuildInputs = [pkgs.geckodriver];
-            } ''
-              # Start the web service
-              ${self.packages.${system}.pot-web}/bin/pot-web &
+        e2e-test = pkgs.writeShellScriptBin "e2e-test" ''
+          # Start the web service
+          ${pot-web.apps.${system}.default.program} &
+          WEB_PID=$!
 
-              # Start geckodriver
-              HOME=$(mktemp -d) geckodriver &
+          # Run the tests
+          ${self.packages.${system}.e2e}/bin/e2e
+          TEST_EXIT=$?
 
-              # Run the tests
-              ${self.packages.${system}.e2e}/bin/e2e
+          # Clean up
+          kill $WEB_PID
 
-              # If we get here, the tests passed
-              touch $out
-            ''
-          else pkgs.runCommand "e2e-test-disabled" {} "echo 'E2E tests are disabled on Darwin' > $out";
+          exit $TEST_EXIT
+        '';
       in {
         packages = {
           pot-cli = pot-cli.packages.${system}.default;
@@ -65,24 +59,27 @@
         };
         devShell = with pkgs;
           mkShell {
-            buildInputs =
-              [
-                cargo
-                rustc
-                rustfmt
-                pre-commit
-                rustPackages.clippy
-                lld
-                wasm-pack
-                wasm-bindgen-cli
-                tailwindcss
-                binaryen
-              ]
-              ++ lib.optional (!stdenv.isDarwin) geckodriver
-              ++ lib.optional (!stdenv.isDarwin) firefox;
+            buildInputs = [
+              cargo
+              rustc
+              rustfmt
+              pre-commit
+              rustPackages.clippy
+              lld
+              wasm-pack
+              wasm-bindgen-cli
+              tailwindcss
+              binaryen
+              geckodriver
+            ];
             RUST_SRC_PATH = rustPlatform.rustLibSrc;
           };
-        checks.e2e = e2e-test;
+        apps = {
+          e2e-test = {
+            type = "app";
+            program = "${e2e-test}/bin/e2e-test";
+          };
+        };
       }
     );
 }
