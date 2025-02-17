@@ -38,9 +38,11 @@
         # Common arguments
         commonArgs = {
           inherit src;
-          buildInputs = pkgs.lib.optionals pkgs.stdenv.isDarwin [
-            pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
-          ];
+          buildInputs =
+            [pkgs.pkg-config]
+            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
+            ];
         };
       in {
         packages.default =
