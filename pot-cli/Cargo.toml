@@ -10,7 +10,7 @@ clap = { version = "4.5.29", features = ["derive"] }
 rand = "0.8.5"
 serde = "1.0.213"
 serde_json = "1.0.132"
-wasi-common = "26.0.0"
+wasi-common = "29.0.1"
 wasm-bindgen-futures = "0.4.45"
 wasmtime = "26.0.0"
 
