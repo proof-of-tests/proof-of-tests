@@ -37,13 +37,14 @@ async fn main() -> Result<()> {
         .await
         .context("Failed waiting for web service")?;
 
-    // Wait for ChromeDriver to be ready
-    wait_for_webdriver("http://localhost:4444")
-        .await
-        .context("Failed waiting for ChromeDriver")?;
+    // // Wait for ChromeDriver to be ready
+    // wait_for_webdriver("http://localhost:4444")
+    //     .await
+    //     .context("Failed waiting for ChromeDriver")?;
 
     // Connect to WebDriver instance
     let mut caps = DesiredCapabilities::firefox();
+    // let mut caps = DesiredCapabilities::safari();
     caps.set_headless()?;
     let driver = WebDriver::new("http://localhost:4444", caps)
         .await

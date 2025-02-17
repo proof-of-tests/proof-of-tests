@@ -27,5 +27,4 @@ jobs:
       - run: nix build .#pot-cli .#pot-web
       - run: nix flake check pot-cli/
       - run: nix flake check
-      - run: geckodriver &
       - run: nix run .#e2e-test -L
