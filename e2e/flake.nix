@@ -39,7 +39,7 @@
         commonArgs = {
           inherit src;
           buildInputs =
-            [pkgs.pkg-config]
+            [pkgs.pkg-config pkgs.openssl]
             ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
             ];
