@@ -41,8 +41,8 @@
           ${pot-web.apps.${system}.default.program} &
           WEB_PID=$!
 
-          ${pkgs.geckodriver}/bin/geckodriver &
-          GECKO_PID=$!
+          # ${pkgs.geckodriver}/bin/geckodriver &
+          # GECKO_PID=$!
 
           # Run the tests
           ${self.packages.${system}.e2e}/bin/e2e
