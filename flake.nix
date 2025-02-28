@@ -41,10 +41,7 @@
           ${pot-web.apps.${system}.default.program} &
           WEB_PID=$!
 
-          echo `which firefox`
-
-          # ${pkgs.geckodriver}/bin/
-          geckodriver --port 4444 &
+          ${pkgs.geckodriver}/bin/geckodriver --port 4444 &
           GECKO_PID=$!
 
           # Run the tests
