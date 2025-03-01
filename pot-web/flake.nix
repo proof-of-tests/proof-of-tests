@@ -37,11 +37,10 @@
         worker-build-bin = worker-build.packages.${system}.default;
         wrangler-bin = wrangler.packages.${system}.default;
 
+        rustToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+
         # Initialize crane with our custom toolchain
-        craneLib = (crane.mkLib pkgs).overrideToolchain (p:
-          p.rust-bin.stable.latest.default.override {
-            targets = ["wasm32-unknown-unknown"];
-          });
+        craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
 
         pot-web-client-deps = craneLib.buildDepsOnly {
           src = ./.;
