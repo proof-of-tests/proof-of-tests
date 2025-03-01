@@ -4,6 +4,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -19,8 +20,12 @@
           inherit system;
           overlays = [(import rust-overlay)];
         };
-        craneLib = crane.mkLib pkgs;
-        rustWasi = pkgs.rust-bin.stable.latest.default.override {
+        rustToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+
+        # Initialize crane with our custom toolchain
+        craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
+
+        rustWasi = rustToolchain.override {
           targets = ["wasm32-wasip1"];
         };
         craneLibWasi = (crane.mkLib pkgs).overrideToolchain rustWasi;
