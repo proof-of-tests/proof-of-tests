@@ -14,6 +14,10 @@ updates:
       patch-versions:
         update-types:
           - "patch"
+      wasm-runtime:
+        patterns:
+          - "wasmtime*"
+          - "wasi-common*"
 
   - package-ecosystem: "cargo"
     directory: "/pot-web"
@@ -26,6 +30,10 @@ updates:
       worker:
         patterns:
           - "worker*"
+      wasm-runtime:
+        patterns:
+          - "wasmtime*"
+          - "wasi-common*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
