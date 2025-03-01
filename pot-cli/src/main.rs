@@ -4,9 +4,8 @@ use std::sync::Arc;
 use anyhow::Context as _;
 use clap::{Parser, Subcommand};
 use hyperloglog::HyperLogLog;
-use rand::rngs::StdRng;
-use rand::Rng;
-use rand::SeedableRng;
+use rand_chacha::rand_core::{RngCore, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 use wasi_common::{pipe::WritePipe, sync::WasiCtxBuilder};
 use wasmtime::{Engine, Linker, Module, Store};
 
@@ -184,9 +183,10 @@ fn main() -> anyhow::Result<()> {
             let mut wasm_test = WasmTest::new(&target)?;
             println!("Start count: {}", wasm_test.hll.count());
 
-            let mut rng = initial_seed.map_or_else(StdRng::from_entropy, StdRng::seed_from_u64);
+            let mut rng =
+                initial_seed.map_or_else(|| ChaCha8Rng::from_os_rng(), ChaCha8Rng::seed_from_u64);
             for _ in 0..iterations {
-                let seed = rng.gen();
+                let seed = rng.next_u64();
                 if let Err((trap, stdout, stderr)) = wasm_test.run(seed)? {
                     println!("trap: {trap}\nstdout:\n{}\nstderr:\n{}", stdout, stderr);
                 }
