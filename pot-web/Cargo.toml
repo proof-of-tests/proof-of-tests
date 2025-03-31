@@ -43,7 +43,7 @@ gloo-timers = "0.3.0"
 worker-kv = "0.8.0"
 ahash = { version = "0.8.11", default-features = false }
 enum-as-inner = "0.6.1"
-either = "1.14.0"
+either = "1.15.0"
 wasmi = "0.40.0"
 sha2 = "0.10.8"
 anyhow = "1.0.97"
